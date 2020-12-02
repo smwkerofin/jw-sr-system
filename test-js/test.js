@@ -56,6 +56,8 @@ add_unit("Harsta", 17, true, true, false);
 add_unit("Bad guy 1", 14, false, false, false);
 add_unit("Bad guy 2", 14, false, false, true);
 
+shuffle(bag);
+
 function draw_next(name, remaining) {
   if(bag.length>0) {
     let nxt=bag[0];

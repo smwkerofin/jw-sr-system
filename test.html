@@ -8,11 +8,17 @@
   <body>
     <h1>Test JS</h1>
 
-    <button type="button" onclick="test()">Run test</button>
-
     <h2>Available actors</h2>
+    <!-- TODO populate this table interactively -->
     <table id="available">
     </table>
+
+    <input type="text" id="newActorName" value="Actor 1">
+    DEX <input type="number" id="newActorDEX" value="10" min="1" max="21"?>
+    <button type="button" 
+      onclick="add_actor('available')">Add (TODO)</button>
+
+    <hr>
 
     <button type="button" onclick="begin_turn('turn_order')">Begin turn</button>
 
@@ -23,7 +29,7 @@
     <address><a href="mailto:stephen@kerofin.co.uk">Stephen Watson</a></address>
 <!-- Created: Mon Nov 30 17:30:13 GMT 2020 -->
 <!-- hhmts start -->
-Last modified: Sun Dec  6 12:57:41 GMT 2020
+Last modified: Mon Dec  7 15:45:51 GMT 2020
 <!-- hhmts end -->
   </body>
 </html>

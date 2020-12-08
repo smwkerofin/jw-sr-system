@@ -221,17 +221,88 @@ class TokenBag {
   }
 }
 
-// Our bag
-var bag=new TokenBag();
-// Default actors for testing
-var actors=[
+/// Initiative tracker
+class InitiativeTracker {
+  /// Constructor
+  constructor() {
+    this.bag=new TokenBag();
+    this.actors=[];
+  }
+
+  /**
+   * Add a set of debug actors for testing purposes
+   */
+  set_debug_actors() {
+    this.actors=[
 	    new Actor("Harsta", 17),
 	    new Actor("Bad guy 1", 10),
 	    new Actor("Bad guy 2", 10),	    
-	    ];
-actors[0].set_coordination_active(true);
-actors[0].set_mobility_active(true);
-actors[2].set_slow_active(true);
+    ];
+    this.actors[0].set_coordination_active(true);
+    this.actors[0].set_mobility_active(true);
+    this.actors[2].set_slow_active(true);
+
+  }
+
+  /**
+   * Add an actor to the list of actors.
+   *
+   * If there is already an actor with the same name, a new one is
+   * not added.  This also causes an alert to be shown.
+   *
+   * @param[in] name Name of the actor to add (string)
+   * @param[in] dex Dexterity of the actor (number, defaults to 10)
+   */
+  add_actor(name, dex=10) {
+    // Only allow one actor per name
+    for(let i=0; i<this.actors.length; i++) {
+      if(this.actors[i].get_name()==name) {
+	alert(name+" already added");
+	return;
+      }
+    }
+
+    let actor=new Actor(name, dex);
+    this.actors.push(actor);
+  }
+
+  /**
+   * Begin a new turn.  The actors are added to the bag and the
+   * turn order output as a list
+   *
+   * @param[in] out_list ID of the HTML list to contain the turn order
+   * (string)
+   */
+  begin_turn(out_list) {
+    // Clear the bag
+    this.bag.start_round();
+
+    // Add our actors to the bag
+    let i=0;
+    for(i=0; i<this.actors.length; i++) {
+      this.bag.add_actor(this.actors[i]);
+    }
+
+    // Give it a good shake
+    this.bag.shuffle();
+    
+    // Draw the tokens out of the bag until we reach the end of the turn
+    // and add the names to the list
+    let output="";
+    while(!this.bag.end_of_round()) {
+      //console.log(this.bag.bag);
+      let actor=this.bag.draw_next();
+      output+="<li>"+actor.get_name()+"\n";
+    }
+
+    // Update HTML list
+    document.getElementById(out_list).innerHTML=output;
+  }
+}
+
+// Create our tracker and populate with debug data
+var tracker=new InitiativeTracker();
+tracker.set_debug_actors();
 
 /**
  * Begin a new turn.  The actors are added to the bag and the
@@ -241,26 +312,19 @@ actors[2].set_slow_active(true);
  * (string)
  */
 function begin_turn(out_list) {
-  // Clear the bag
-  bag.start_round();
+  // Delegate to our class object
+  tracker.begin_turn(out_list);
+}
 
-  // Add our actors to the bag
-  let i=0;
-  for(i=0; i<actors.length; i++) {
-    bag.add_actor(actors[i]);
-  }
-
-  // Give it a good shake
-  bag.shuffle();
-
-  // Draw the tokens out of the bag until we reach the end of the turn
-  // and add the names to the list
-  let output="";
-  while(!bag.end_of_round()) {
-    actor=bag.draw_next();
-    output+="<li>"+actor.get_name()+"\n";
-  }
-
-  // Update HTML list
-  document.getElementById(out_list).innerHTML=output;
+/**
+ * Add a new actor.
+ *
+ * @param[in] tabel ID of table to show the actors in
+ *
+ * @todo Implement!
+ */
+function add_actor(table) {
+  let name=document.getElementById("newActorName").value;
+  let dex=document.getElementById("newActorDEX").value;
+  alert("TODO: add "+name+" DEX "+dex);
 }

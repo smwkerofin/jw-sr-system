@@ -1,3 +1,6 @@
+// Maximum DEX we can cope with
+const MaxDEX=30;
+
 /// The actor class represents someone or something that acts in a round
 class Actor {
   /**
@@ -65,6 +68,42 @@ class Actor {
    */
   get_name() {
     return this.name;
+  }
+
+  /**
+   * Get the Dexterity of the actor
+   *
+   * @return The DEX
+   */
+  get_dex() {
+    return this.dex;
+  }
+
+  /**
+   * Get whether the Coordination spell is active on the actor
+   *
+   * @return true if active, false otherwise
+   */
+  get_coordination_active() {
+    return this.coordination;
+  }
+
+  /**
+   * Get whether the Mobility spell is active on the actor
+   *
+   * @return true if active, false otherwise
+   */
+  get_mobility_active() {
+    return this.mobility;
+  }
+
+  /**
+   * Get whether the Slow spell is active on the actor
+   *
+   * @return true if active, false otherwise
+   */
+  get_slow_active() {
+    return this.slow;
   }
 
   /**
@@ -227,6 +266,8 @@ class InitiativeTracker {
   constructor() {
     this.bag=new TokenBag();
     this.actors=[];
+    // Communicate this from the HTML somehow?
+    this.table_id="available";
   }
 
   /**
@@ -298,6 +339,75 @@ class InitiativeTracker {
     // Update HTML list
     document.getElementById(out_list).innerHTML=output;
   }
+
+  update_table() {
+    // First build the table
+    let body="<tr><th>Actor</th><th>DEX</th><th>Coordination?</th>"+
+      "<th>Mobility?</th><th>Slow?</th><th>Tokens</th></tr>\n";
+
+    for(let i=0; i<this.actors.length; i++) {
+      let row="<tr>";
+      row+="<td>"+this.actors[i].get_name()+"</td>";
+
+      let dex=this.actors[i].get_dex();
+      let id="actor"+i+"DEX";
+      row+='<td><input type="number" id="'+id+'" value="'+dex+'"'+
+	' min="1" max="'+MaxDEX+'" onchange="dex_changed('+i+')"></td>';
+      
+      row+='<td>'+this.create_tickbox(i, 'Coord')+'</td>';
+      row+='<td>'+this.create_tickbox(i, 'Mobil')+'</td>';
+      row+='<td>'+this.create_tickbox(i, 'Slow')+'</td>';
+
+      row+='<td><div id="actor'+i+'Tokens"></div></td>';
+
+      row+="</tr>\n";
+      
+      body+=row;
+    }
+
+    document.getElementById(this.table_id).innerHTML=body;
+
+    // Now update the spell state & token count
+    this.update_table_values();
+  }
+
+  create_tickbox(index, tag) {
+    let id="actor"+index+tag;
+    let funame=tag+"_changed("+index+")";
+    return '<input type="checkbox" id="'+id+'" onchange="'+
+      funame+'">';
+  }
+
+  update_table_values() {
+    for(let i=0; i<this.actors.length; i++) {
+      let id="actor"+i+"DEX";
+      let number=document.getElementById(id);
+      number.value=this.actors[i].get_dex();
+      
+      id="actor"+i+"Coord";
+      let check=document.getElementById(id);
+      check.checked=this.actors[i].get_coordination_active();
+      
+      id="actor"+i+"Mobil";
+      check=document.getElementById(id);
+      check.checked=this.actors[i].get_mobility_active();
+      
+      id="actor"+i+"Slow";
+      check=document.getElementById(id);
+      check.checked=this.actors[i].get_slow_active();
+
+      let toks=this.actors[i].get_tokens();
+      id="actor"+i+"Tokens";
+      document.getElementById(id).innerHTML=toks;
+    }
+  }
+
+  update_actor_dex(index, dex) {
+    if(index>=0 && index<this.actors.length) {
+      this.actors[index].set_dex(dex);
+      this.update_table_values();
+    }
+  }
 }
 
 // Create our tracker and populate with debug data
@@ -327,4 +437,28 @@ function add_actor(table) {
   let name=document.getElementById("newActorName").value;
   let dex=document.getElementById("newActorDEX").value;
   alert("TODO: add "+name+" DEX "+dex);
+  tracker.update_table();
+}
+
+function dex_changed(index) {
+  console.log("DEX changed "+index);
+  let id="actor"+index+"DEX";
+  tracker.update_actor_dex(index, 
+			   document.getElementById(id).value);
+}
+
+function Coord_changed(index) {
+  console.log("Coord changed "+index);
+}
+
+function Mobil_changed(index) {
+  console.log("Mobil changed "+index);
+}
+
+function Slow_changed(index) {
+  console.log("slow changed "+index);
+}
+
+function update_table() {
+  tracker.update_table();
 }

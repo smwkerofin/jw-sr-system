@@ -3,9 +3,26 @@
   <head>
     <title>Test JS</title>
     <script src="initiative.js"></script>
+    <style>
+      table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+      }
+
+      tr:nth-child(even) {
+        background-color: #dddddd;
+      }
+</style>
   </head>
 
-  <body>
+  <body onload="update_table()">
     <h1>Test JS</h1>
 
     <h2>Available actors</h2>
@@ -14,7 +31,7 @@
     </table>
 
     <input type="text" id="newActorName" value="Actor 1">
-    DEX <input type="number" id="newActorDEX" value="10" min="1" max="21"?>
+    DEX <input type="number" id="newActorDEX" value="10" min="1" max="21">
     <button type="button" 
       onclick="add_actor('available')">Add (TODO)</button>
 
@@ -29,7 +46,7 @@
     <address><a href="mailto:stephen@kerofin.co.uk">Stephen Watson</a></address>
 <!-- Created: Mon Nov 30 17:30:13 GMT 2020 -->
 <!-- hhmts start -->
-Last modified: Mon Dec  7 15:45:51 GMT 2020
+Last modified: Tue Dec  8 11:13:54 GMT 2020
 <!-- hhmts end -->
   </body>
 </html>

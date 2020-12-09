@@ -282,15 +282,14 @@ class InitiativeTracker {
    * Add a set of debug actors for testing purposes
    */
   set_debug_actors() {
-    this.actors=[
-	    new Actor("Harsta", 17),
-	    new Actor("Bad guy 1", 10),
-	    new Actor("Bad guy 2", 10),	    
-    ];
-    this.actors[0].set_coordination_active(true);
-    this.actors[0].set_mobility_active(true);
-    this.actors[2].set_slow_active(true);
-
+    let actors=["Harsta", "Bad guy 1", "Bad guy 2"];
+    for(let i=0; i<actors.length; i++) {
+      this.add_actor(actors[i]);
+    }
+    this.update_actor_dex(0, 17);
+    this.update_actor_coordination(0, true);
+    this.update_actor_mobility(0, true);
+    this.update_actor_slow(2, true);
   }
 
   /**
@@ -444,7 +443,13 @@ class InitiativeTracker {
   update_actor_dex(index, dex) {
     if(index>=0 && index<this.actors.length) {
       this.actors[index].set_dex(dex);
-      this.update_table_values();
+      // This can generate an error if updating before creating the table
+      try {
+	this.update_table_values();
+      }
+      catch(err) {
+	// Ignore it
+      }
     }
   }
 
@@ -459,7 +464,13 @@ class InitiativeTracker {
   update_actor_coordination(index, active) {
     if(index>=0 && index<this.actors.length) {
       this.actors[index].set_coordination_active(active);
-      this.update_table_values();
+      // This can generate an error if updating before creating the table
+      try {
+	this.update_table_values();
+      }
+      catch(err) {
+	// Ignore it
+      }
     }
   }
 
@@ -474,7 +485,13 @@ class InitiativeTracker {
   update_actor_mobility(index, active) {
     if(index>=0 && index<this.actors.length) {
       this.actors[index].set_mobility_active(active);
-      this.update_table_values();
+      // This can generate an error if updating before creating the table
+      try {
+	this.update_table_values();
+      }
+      catch(err) {
+	// Ignore it
+      }
     }
   }
 
@@ -489,7 +506,13 @@ class InitiativeTracker {
   update_actor_slow(index, active) {
     if(index>=0 && index<this.actors.length) {
       this.actors[index].set_slow_active(active);
-      this.update_table_values();
+      // This can generate an error if updating before creating the table
+      try {
+	this.update_table_values();
+      }
+      catch(err) {
+	// Ignore it
+      }
     }
   }
 

@@ -274,6 +274,7 @@ class InitiativeTracker {
   constructor() {
     this.bag=new TokenBag();
     this.actors=[];
+    this.active=[];
     // Communicate this from the HTML somehow?
     this.table_id="available";
   }
@@ -312,6 +313,7 @@ class InitiativeTracker {
 
     let actor=new Actor(name, dex);
     this.actors.push(actor);
+    this.active.push(true);
   }
 
   /**
@@ -328,7 +330,9 @@ class InitiativeTracker {
     // Add our actors to the bag
     let i=0;
     for(i=0; i<this.actors.length; i++) {
-      this.bag.add_actor(this.actors[i]);
+      if(this.active[i]) {
+        this.bag.add_actor(this.actors[i]);
+      }
     }
 
     // Give it a good shake
@@ -361,7 +365,8 @@ class InitiativeTracker {
   update_table() {
     // First build the table
     let body="<tr><th>Actor</th><th>DEX</th><th>Coordination?</th>"+
-      "<th>Mobility?</th><th>Slow?</th><th>Tokens</th></tr>\n";
+      "<th>Mobility?</th><th>Slow?</th><th>Tokens</th>"+
+      "<th>Active?</th></tr>\n";
 
     for(let i=0; i<this.actors.length; i++) {
       let row="<tr>";
@@ -377,6 +382,8 @@ class InitiativeTracker {
       row+='<td>'+this.create_tickbox(i, 'Slow')+'</td>';
 
       row+='<td><div id="actor'+i+'Tokens"></div></td>';
+
+      row+='<td>'+this.create_tickbox(i, 'Active')+'</td>';
 
       row+="</tr>\n";
       
@@ -430,6 +437,10 @@ class InitiativeTracker {
       let toks=this.actors[i].get_tokens();
       id="actor"+i+"Tokens";
       document.getElementById(id).innerHTML=toks;
+
+      id="actor"+i+"Active";
+      check=document.getElementById(id);
+      check.checked=this.active[i];      
     }
   }
 
@@ -513,6 +524,20 @@ class InitiativeTracker {
       catch(err) {
 	// Ignore it
       }
+    }
+  }
+
+  /**
+   * Update the active status of an actor in the list 
+   * of actors
+   *
+   * @param[in] index Index of the actor in the list (number).  If this
+   * is not a valid index, the call has no effect
+   * @param[in] active true if the actor is active, false otherwise
+   */
+  update_actor_active(index, active) {
+    if(index>=0 && index<this.actors.length) {
+      this.active[index]=active;
     }
   }
 
@@ -608,6 +633,21 @@ function Slow_changed(index) {
   console.log("slow changed "+index);
   let id="actor"+index+"Slow";
   tracker.update_actor_slow(index, 
+			   document.getElementById(id).checked);
+}
+
+/**
+ * An actor's active status has been changed in the HTML table.  
+ * Update the status stored in the actor's list.
+ *
+ * This delegates to InititativeTracker.update_actor_active()
+ *
+ * @param[in] index Index of the actor in the list (number).  
+ */
+function Active_changed(index) {
+  console.log("active changed "+index);
+  let id="actor"+index+"Active";
+  tracker.update_actor_active(index, 
 			   document.getElementById(id).checked);
 }
 

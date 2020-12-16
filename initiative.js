@@ -275,6 +275,7 @@ class InitiativeTracker {
     this.bag=new TokenBag();
     this.actors=[];
     this.active=[];
+    this.drawn=[];
     // Communicate this from the HTML somehow?
     this.table_id="available";
   }
@@ -334,23 +335,43 @@ class InitiativeTracker {
         this.bag.add_actor(this.actors[i]);
       }
     }
+    document.getElementById("tokens_remain").innerHTML=this.bag.remaining()+
+      " token(s) remain in bag";
 
     // Give it a good shake
     this.bag.shuffle();
-    
-    // Draw the tokens out of the bag until we reach the end of the turn
-    // and add the names to the list
-    let output="";
-    while(!this.bag.end_of_round()) {
-      //console.log(this.bag.bag);
+
+    // Draw the first
+    this.drawn=[];
+    this.draw_token(out_list);
+  }
+
+  /**
+   * Draw one tokem out of the bag, unless at end of turn.  Update the
+   * HMTL to show all tokens drawn, how many are left in the bag and if
+   * it is the end of the turn.
+   *
+   * @param[in] out_list ID of the HTML list to contain the turn order
+   * (string)
+   */
+  draw_token(out_list) {
+    if(!this.bag.end_of_round()) {
       let actor=this.bag.draw_next();
-      output+="<li>"+actor.get_name()+"\n";
+      this.drawn.push(actor);
+    }
+
+    let output="";
+    for(let i=0; i<this.drawn.length; i++) {
+      output+="<li>"+this.drawn[i].get_name()+"\n";
     }
 
     // Update HTML list
     document.getElementById(out_list).innerHTML=output;
-    document.getElementById("tokens_remain").innerHTML=this.bag.remaining()+
-      " token(s) remain in bag";
+    let text=this.bag.remaining()+" token(s) remain in bag.";
+    if(this.bag.end_of_round()) {
+      text+=" Turn end.";
+    }
+    document.getElementById("tokens_remain").innerHTML=text;
   }
 
   /**
@@ -659,4 +680,14 @@ function Active_changed(index) {
  */
 function update_table() {
   tracker.update_table();
+}
+
+/**
+ * Draw a token from the bag and add it to the turn order.
+ *
+ * @param[in] out_list ID of the HTML list to contain the turn order
+ * (string)
+ */
+function draw_token(out_list) {
+  tracker.draw_token(out_list);
 }

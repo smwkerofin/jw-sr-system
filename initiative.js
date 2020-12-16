@@ -544,7 +544,9 @@ function begin_turn(out_list) {
 function add_actor(table) {
   let name=document.getElementById("newActorName").value;
   let dex=document.getElementById("newActorDEX").value;
-  alert("TODO: add "+name+" DEX "+dex);
+  //alert("TODO: add "+name+" DEX "+dex);
+  tracker.add_actor(name, dex);
+  tracker.update_table();
 }
 
 /**

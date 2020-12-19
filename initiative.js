@@ -344,6 +344,9 @@ class InitiativeTracker {
     // Draw the first
     this.drawn=[];
     this.draw_token(out_list);
+
+    // Enable the "Draw token" button
+    document.getElementById("draw_button").disabled=false;
   }
 
   /**
@@ -370,6 +373,9 @@ class InitiativeTracker {
     let text=this.bag.remaining()+" token(s) remain in bag.";
     if(this.bag.end_of_round()) {
       text+=" Turn end.";
+      // Disable the "Draw token" button, until the next turn begins
+      document.getElementById("draw_button").disabled=true;
+
     }
     document.getElementById("tokens_remain").innerHTML=text;
   }
@@ -680,6 +686,9 @@ function Active_changed(index) {
  */
 function update_table() {
   tracker.update_table();
+
+  // Disable the "Draw token" button, until the turn begins
+  document.getElementById("draw_button").disabled=true;
 }
 
 /**

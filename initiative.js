@@ -221,7 +221,7 @@ class TokenBag {
   shuffle() {
     let i=0;
     for(i=this.bag.length-1; i>0; i--) {
-      let j=Math.floor(Math.random()*i);
+      let j=Math.floor(Math.random()*(i+1));
       let k=this.bag[i];
       this.bag[i]=this.bag[j];
       this.bag[j]=k;
@@ -625,7 +625,6 @@ function dex_changed(index) {
  * @param[in] index Index of the actor in the list (number).  
  */
 function Coord_changed(index) {
-  //console.log("Coord changed "+index);
   let id="actor"+index+"Coord";
   tracker.update_actor_coordination(index, 
 			   document.getElementById(id).checked);
@@ -641,7 +640,6 @@ function Coord_changed(index) {
  * @param[in] index Index of the actor in the list (number).  
  */
 function Mobil_changed(index) {
-  console.log("Mobil changed "+index);
   let id="actor"+index+"Mobil";
   tracker.update_actor_mobility(index, 
 			   document.getElementById(id).checked);
@@ -657,7 +655,6 @@ function Mobil_changed(index) {
  * @param[in] index Index of the actor in the list (number).  
  */
 function Slow_changed(index) {
-  console.log("slow changed "+index);
   let id="actor"+index+"Slow";
   tracker.update_actor_slow(index, 
 			   document.getElementById(id).checked);
@@ -672,7 +669,6 @@ function Slow_changed(index) {
  * @param[in] index Index of the actor in the list (number).  
  */
 function Active_changed(index) {
-  console.log("active changed "+index);
   let id="actor"+index+"Active";
   tracker.update_actor_active(index, 
 			   document.getElementById(id).checked);

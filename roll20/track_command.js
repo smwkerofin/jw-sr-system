@@ -5,7 +5,7 @@ function message_handler(msg) {
 
   log("track comamnd: ", sub_cmd);
   sendChat("Track command",
-	       '/w "' + _fixWho(msg.who) + '" ' + sub_cmd);
+	       '/w "' + removeGM(msg.who) + '" ' + sub_cmd);
   if(sub_cmd=="list") {
     list_tokens(msg.who);
   } else if(sub_cmd=="start") {
@@ -14,7 +14,26 @@ function message_handler(msg) {
 }
 
 function list_tokens(who) {
-  say("would list tokens");
+  say("list tokens");
+
+  var tokens=filterObjs(function(obj) {
+      return obj.get('subtype')=='token';
+    });
+
+  let i=0;
+  for(i=0; i<tokens.length; i++) {
+    say(tokens[i].get('name'));
+  }
+
+  say("list characters");
+  var chars=filterObjs(function(obj) {
+      return obj.get('type')=='character';
+    });
+  for(i=0; i<chars.length; i++) {
+    say(chars[i].get('name'));
+    let dex=getAttrByName(chars[i].id, "curdex");
+    say("dex="+dex);
+  }
 }
 
 function start_turn(who) {
@@ -22,14 +41,14 @@ function start_turn(who) {
 }
 
 function whisper(who, what) {
-  sendChat("Track", '/w "' + _fixWho(who) + '" ' + what);
+  sendChat("Track", '/w "' + removeGM(who) + '" ' + what);
 }
 
 function say(what) {
   sendChat("Track", what);
 }
 
-function _fixWho(who) {
+function removeGM(who) {
     return who.replace(/\(GM\)/, '').trim();
 }
 
@@ -43,7 +62,7 @@ on("chat:message", msg => {
     catch(err) {
       log("Track command error: "+err.message);
       sendChat("Track command error: ",
-	       '/w "' + _fixWho(msg.who) + '" ' + msg);
+	       '/w "' + removeGM(msg.who) + '" ' + msg);
       log(err.stack);
     }
   });
